@@ -15,6 +15,6 @@ public interface UserMapper {
 
     UserResponse toUserResponse(User user);
 
-    // map data cua request vao obj user
+    // map data cua request vao obj user (update user)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 }

@@ -1,6 +1,6 @@
 package com.devnguyen.test_skill.exception;
 
-import com.devnguyen.test_skill.dto.request.ApiResponse;
+import com.devnguyen.test_skill.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -37,9 +37,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse>handlingMethodArgumentNotValidException(MethodArgumentNotValidException exception){
-        String enumkey = exception.getFieldError().getDefaultMessage();
+        String enumKey = exception.getFieldError().getDefaultMessage();
 
-        ErrorCode errorCode = ErrorCode.valueOf(enumkey);
+        ErrorCode errorCode = ErrorCode.valueOf(enumKey);
 
         ApiResponse apiResponse = new ApiResponse();
 

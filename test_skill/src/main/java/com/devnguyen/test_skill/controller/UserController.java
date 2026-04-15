@@ -1,6 +1,6 @@
 package com.devnguyen.test_skill.controller;
 
-import com.devnguyen.test_skill.dto.request.ApiResponse;
+import com.devnguyen.test_skill.dto.response.ApiResponse;
 import com.devnguyen.test_skill.dto.request.UserCreateRequest;
 import com.devnguyen.test_skill.dto.request.UserUpdateRequest;
 import com.devnguyen.test_skill.dto.response.UserResponse;
@@ -39,6 +39,7 @@ public class UserController {
     // get UserId
     @GetMapping("/{userId}")
     UserResponse getUser(@PathVariable("userId") String userId){
+
         return userService.getUser(userId);
     }
 

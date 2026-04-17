@@ -19,9 +19,9 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {"/users", "auth/token", "auth/introspect" };
+    private final String[] PUBLIC_ENDPOINTS = {"/users", "/auth/token", "/auth/introspect" };
 
-    @Value("/${jwt.signerKey}")
+    @Value("${jwt.signerKey}")
     private String signerKey;
 
     @Bean

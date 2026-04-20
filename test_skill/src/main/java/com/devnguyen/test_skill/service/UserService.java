@@ -12,7 +12,6 @@ import com.devnguyen.test_skill.user.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +26,10 @@ public class UserService {
 
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     // post user
-    public User createUser(UserCreateRequest request){
+    public UserResponse createUser(UserCreateRequest request){
         // exception Existed
         if (userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTED); // Exception
@@ -38,16 +38,16 @@ public class UserService {
         User user = userMapper.toUser(request);
 
         // security - mã hóa mật khẩu
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         // Thêm 1 field role mặc định là User.
-        // === THÊM ROLE MẶC ĐỊNH ===
         Set<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
         user.setRoles(roles);
 
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        return userMapper.toUserResponse(user);
     }
 
     // get listUser

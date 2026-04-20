@@ -12,13 +12,17 @@ import com.devnguyen.test_skill.user.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor // tạo 1 cái constructor cho tất cả các biến được định nghĩa là final ( thay thế @Autowrite)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true) // bất cứ field nào không khai báo kdl, mặc định là private
@@ -51,14 +55,34 @@ public class UserService {
     }
 
     // get listUser
-    public List<User> getUsers(){
-        return userRepository.findAll();
+    // để User vào được hàm này cần thỏa mãn điều kiện của Annotation này.
+    // chỉ có role Admin mới có quyền lấy danh sách người dùng.
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserResponse> getUsers(){
+        log.info("Message: In method get user");
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
     // get userId
+    // khi method này được thực hiện xong thì mới kiểm tra điều kiện của @Annotation này.
+    // User chỉ có thể lấy được chính thông tin của chính mình
+    // returnObject = chính là method UserResponse - authentication là User đang đăng nhập
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUser(String userId){
+        log.info("Message: In method get user by Id");
         return userMapper.toUserResponse( userRepository.findById(userId)
                 .orElseThrow( () -> new RuntimeException(" Không tìm thấy User !! ") ) ); // RuntimeException
+    }
+
+    public UserResponse getMyInfo(){
+        // khi 1 request xác thực thành công thì sẽ được lưu vào 1 SecurityContextHolder
+        //.getContext() -> User hiện tại
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name).orElseThrow(
+                () ->new AppException(ErrorCode.USER_NOT_EXISTED) );
+
+        return userMapper.toUserResponse(user);
     }
 
     // put userId

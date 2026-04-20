@@ -6,6 +6,7 @@ import com.devnguyen.test_skill.dto.response.IntrospectResponse;
 import com.devnguyen.test_skill.exception.AppException;
 import com.devnguyen.test_skill.exception.ErrorCode;
 import com.devnguyen.test_skill.repository.UserRepository;
+import com.devnguyen.test_skill.user.User;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -19,11 +20,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Slf4j
 @Data
@@ -70,7 +73,7 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATION);
         }
 
-        var token = generateToken(request.getUsername());
+        var token = generateToken(user);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -80,18 +83,18 @@ public class AuthenticationService {
     }
 
     // khoi tao token
-    private String generateToken(String username){
+    private String generateToken(User user){
 
         // tao header
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         // build body claim cho payload
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUsername())
                 .issuer("devNguyen.com")
                 .issueTime(new Date())
                 .expirationTime( new Date( Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()) )
-                .claim("customClaim", "custom")
+                .claim("scope", buildScope(user))
                 .build();
 
         // payload
@@ -110,5 +113,17 @@ public class AuthenticationService {
             log.error("Cant not create token", e);
             throw new RuntimeException(e);
         }
+
+    }
+
+    // build scope tu 1 User
+    private String buildScope(User user) {
+        StringJoiner stringJoiner = new StringJoiner(" ");
+
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
+            user.getRoles().forEach(stringJoiner::add);
+        }
+
+        return stringJoiner.toString();
     }
 }

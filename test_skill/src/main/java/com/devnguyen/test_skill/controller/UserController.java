@@ -5,13 +5,15 @@ import com.devnguyen.test_skill.dto.request.UserCreateRequest;
 import com.devnguyen.test_skill.dto.request.UserUpdateRequest;
 import com.devnguyen.test_skill.dto.response.UserResponse;
 import com.devnguyen.test_skill.service.UserService;
-import com.devnguyen.test_skill.user.User;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -31,16 +33,34 @@ public class UserController {
 
     // get listUser
     @GetMapping
-    List<User> getUsers(){
-        return userService.getUsers();
+    ApiResponse<List<UserResponse>> getUsers(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getUsers())
+                .build();
     }
 
 
     // get UserId
     @GetMapping("/{userId}")
-    UserResponse getUser(@PathVariable("userId") String userId){
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId){
 
-        return userService.getUser(userId);
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUser(userId))
+                .build();
+    }
+
+    // get my-info
+    @GetMapping("/myInfo")
+    ApiResponse<UserResponse> getMyInfo(){
+
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
+                .build();
     }
 
 
@@ -59,5 +79,5 @@ public class UserController {
     }
 
 
-
 }
+

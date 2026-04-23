@@ -1,6 +1,7 @@
 package com.devnguyen.test_skill.configuration;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,10 +28,10 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {"/users", "/auth/token", "/auth/introspect" };
+    private final String[] PUBLIC_ENDPOINTS = {"/users", "/auth/token", "/auth/introspect", "/auth/logout","/auth/refresh" };
 
-    @Value("${jwt.signerKey}")
-    private String signerKey;
+    @Autowired
+    CustomJwtDecoder customJwtDecoder;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -42,7 +43,7 @@ public class SecurityConfig {
         // xu ly khi nguoi dung cung cap 1 token hop le thi moi cho get User
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer ->
-                        jwtConfigurer.decoder(jwtDecoder())
+                        jwtConfigurer.decoder(customJwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
@@ -69,16 +70,18 @@ public class SecurityConfig {
 
         return jwtAuthenticationConverter;
     }
-    @Bean
-    JwtDecoder jwtDecoder(){
-        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-        return NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
 
-
-    }
+//    // chịu trách nhiệm cho việc verifyToken.
+//    @Bean
+//    JwtDecoder jwtDecoder(){
+//        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
+//        return NimbusJwtDecoder
+//                .withSecretKey(secretKeySpec)
+//                .macAlgorithm(MacAlgorithm.HS512)
+//                .build();
+//
+//
+//    }
 
 
     @Bean

@@ -1,6 +1,8 @@
 package com.devnguyen.test_skill.controller;
 import com.devnguyen.test_skill.dto.request.AuthenticationRequest;
 import com.devnguyen.test_skill.dto.request.IntrospectRequest;
+import com.devnguyen.test_skill.dto.request.LogoutRequest;
+import com.devnguyen.test_skill.dto.request.RefreshRequest;
 import com.devnguyen.test_skill.dto.response.ApiResponse;
 import com.devnguyen.test_skill.dto.response.AuthenticationResponse;
 import com.devnguyen.test_skill.dto.response.IntrospectResponse;
@@ -39,6 +41,25 @@ public class AuthenticationController {
         var result = authenticationService.introspect(request);
 
         return ApiResponse.<IntrospectResponse>builder()
+                .result(result)
+                .build();
+    }
+
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+
+        return ApiResponse.<Void>builder()
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
+            throws ParseException, JOSEException {
+
+        var result = authenticationService.refreshToken(request);
+
+        return ApiResponse.<AuthenticationResponse>builder()
                 .result(result)
                 .build();
     }

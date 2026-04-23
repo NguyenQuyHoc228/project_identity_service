@@ -9,7 +9,7 @@ public enum ErrorCode {
     USERNAME_INVALID(1003," Username >= 3 kí tự bro !! ",HttpStatus.BAD_REQUEST ),
     PASSWORD_INVALID(1004," Password >= 5 kí tự bro !! ", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1005,"Người dùng KHÔNG tồn tại !!", HttpStatus.NOT_FOUND),
-    UNAUTHENTICATED(1006,"Bro cần nhập toke để xác minh !!",HttpStatus.UNAUTHORIZED),
+    UNAUTHENTICATED(1006,"Bro xác minh bằng token đi !!",HttpStatus.UNAUTHORIZED),
     UN_AUTHORIZED(1007,"Bro không có quyền !!",HttpStatus.FORBIDDEN),
     DOB_INVALID(1007,"Ngày sinh không hợp lệ !!",HttpStatus.BAD_REQUEST)
     ;

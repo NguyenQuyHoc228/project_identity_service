@@ -6,11 +6,12 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 public enum ErrorCode {
     USER_EXISTED(1002, " USERNAME ĐÃ TỒN TẠI !! ",HttpStatus.BAD_REQUEST),
-    USERNAME_INVALID(1003," Username >= 3 ki tu !! ",HttpStatus.BAD_REQUEST ),
-    PASSWORD_INVALID(1004," Password >= 5 ki tu !! ", HttpStatus.BAD_REQUEST),
-    USER_NOT_EXISTED(1005,"User NOT Existed !!", HttpStatus.NOT_FOUND),
-    UNAUTHENTICATED(1006,"Un Authentication !!",HttpStatus.UNAUTHORIZED),
-    UN_AUTHORIZED(1007,"you do not have permission !!",HttpStatus.FORBIDDEN)
+    USERNAME_INVALID(1003," Username >= 3 kí tự bro !! ",HttpStatus.BAD_REQUEST ),
+    PASSWORD_INVALID(1004," Password >= 5 kí tự bro !! ", HttpStatus.BAD_REQUEST),
+    USER_NOT_EXISTED(1005,"Người dùng KHÔNG tồn tại !!", HttpStatus.NOT_FOUND),
+    UNAUTHENTICATED(1006,"Bro cần nhập toke để xác minh !!",HttpStatus.UNAUTHORIZED),
+    UN_AUTHORIZED(1007,"Bro không có quyền !!",HttpStatus.FORBIDDEN),
+    DOB_INVALID(1007,"Ngày sinh không hợp lệ !!",HttpStatus.BAD_REQUEST)
     ;
 
     private int code;

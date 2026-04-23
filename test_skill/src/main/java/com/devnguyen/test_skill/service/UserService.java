@@ -7,6 +7,7 @@ import com.devnguyen.test_skill.enums.Role;
 import com.devnguyen.test_skill.exception.AppException;
 import com.devnguyen.test_skill.exception.ErrorCode;
 import com.devnguyen.test_skill.mapper.UserMapper;
+import com.devnguyen.test_skill.repository.RoleRepository;
 import com.devnguyen.test_skill.repository.UserRepository;
 import com.devnguyen.test_skill.user.User;
 import lombok.AccessLevel;
@@ -31,6 +32,7 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     // post user
     public UserResponse createUser(UserCreateRequest request){
@@ -58,7 +60,8 @@ public class UserService {
     // get listUser
     // để User vào được hàm này cần thỏa mãn điều kiện của Annotation này.
     // chỉ có role Admin mới có quyền lấy danh sách người dùng.
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_DATA')")
     public List<UserResponse> getUsers(){
         log.info("Message: In method get user");
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
@@ -92,6 +95,10 @@ public class UserService {
                 .orElseThrow( () -> new RuntimeException(" Không tìm thấy User !! ") );
 
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse( userRepository.save(user) );
     }

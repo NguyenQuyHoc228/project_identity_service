@@ -35,6 +35,6 @@ public class User {
     @ManyToMany
     @JdbcTypeCode(SqlTypes.JSON)           // ← Quan trọng nhất
     @Column(name = "roles", columnDefinition = "JSON")
-    Set<Role> roles = new HashSet<>();   // khởi tạo mặc định
+    Set<Role> roles;   // khởi tạo mặc định
     // ===============================================
 }

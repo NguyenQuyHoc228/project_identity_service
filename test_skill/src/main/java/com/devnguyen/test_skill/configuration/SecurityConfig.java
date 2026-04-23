@@ -44,7 +44,11 @@ public class SecurityConfig {
                 oauth2.jwt(jwtConfigurer ->
                         jwtConfigurer.decoder(jwtDecoder())
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
+
+
+
 
         // tat tinh nang bao ve mac dinh cua csrf
         httpSecurity.csrf(AbstractHttpConfigurer::disable);

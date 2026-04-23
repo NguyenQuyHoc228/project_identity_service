@@ -47,7 +47,8 @@ public class UserService {
         // Thêm 1 field role mặc định là User.
         Set<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
-        user.setRoles(roles);
+
+//        user.setRoles(roles);
 
         user = userRepository.save(user);
 

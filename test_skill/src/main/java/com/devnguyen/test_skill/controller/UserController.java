@@ -6,6 +6,7 @@ import com.devnguyen.test_skill.dto.request.UserUpdateRequest;
 import com.devnguyen.test_skill.dto.response.UserResponse;
 import com.devnguyen.test_skill.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 

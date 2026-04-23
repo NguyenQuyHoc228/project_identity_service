@@ -32,8 +32,9 @@ public class User {
     LocalDate dob;
 
     // ================== FIX ROLES ==================
+    @ManyToMany
     @JdbcTypeCode(SqlTypes.JSON)           // ← Quan trọng nhất
     @Column(name = "roles", columnDefinition = "JSON")
-    Set<String> roles = new HashSet<>();   // khởi tạo mặc định
+    Set<Role> roles = new HashSet<>();   // khởi tạo mặc định
     // ===============================================
 }

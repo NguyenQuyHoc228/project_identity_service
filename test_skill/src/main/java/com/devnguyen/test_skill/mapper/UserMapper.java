@@ -3,6 +3,7 @@ package com.devnguyen.test_skill.mapper;
 import com.devnguyen.test_skill.dto.request.UserCreateRequest;
 import com.devnguyen.test_skill.dto.request.UserUpdateRequest;
 import com.devnguyen.test_skill.dto.response.UserResponse;
+import com.devnguyen.test_skill.user.Role;
 import com.devnguyen.test_skill.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -17,4 +18,9 @@ public interface UserMapper {
 
     // map data cua request vao obj user (update user)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
+
+    // 👇 thêm cái này
+    default String map(Role role) {
+        return role.getName();
+    }
 }
